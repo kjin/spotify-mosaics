@@ -60,7 +60,7 @@ app.use(route.get('/playlists', async (ctx, next) => {
       playlists = playlists.concat(response.items)
       offset += MAX_PLAYLISTS_PER_QUERY
     }
-    ctx.body = `${htmlPrefix}<ol>\n${playlists.map(p => `<li><a href=/tracks?playlist=${p.id}>${p.name}</a></li>`).join('\n')}</ol>${htmlSuffix}`
+    ctx.body = `${htmlPrefix}<ol>\n${playlists.map(p => `<li><a href=/tracks?user=${p.owner.id}&playlist=${p.id}>${p.name}</a></li>`).join('\n')}</ol>${htmlSuffix}`
   } else {
     ctx.redirect('authenticated')
   }
@@ -70,18 +70,14 @@ app.use(route.get('/playlists', async (ctx, next) => {
 app.use(route.get('/tracks', async (ctx, next) => {
   if (ctx.cookies.get('accessToken')) {
     spotify.setAccessToken(ctx.cookies.get('accessToken'))
-    let myId = ctx.cookies.get('me')
-    if (!myId) {
-      myId = (await spotify.getMe()).body.id
-      ctx.cookies.set('me', myId)
-    }
+    const userId = ctx.query.user;
     const playlistId = ctx.query.playlist;
-    if (playlistId) {
+    if (userId && playlistId) {
       let tracks = []
       let tracksRemaining = Infinity
       let offset = 0
       while (offset < tracksRemaining) {
-        const response = (await spotify.getPlaylistTracks(myId, playlistId, {
+        const response = (await spotify.getPlaylistTracks(userId, playlistId, {
           offset: offset,
           limit: MAX_TRACKS_PER_QUERY
         })).body
