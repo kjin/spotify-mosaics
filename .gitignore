@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log.*
+.vscode
+client_id.json
+client_secret.json

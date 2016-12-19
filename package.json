@@ -1,0 +1,15 @@
+{
+  "name": "spotify-mosaics",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node --harmony-async-await index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inline-urlescape": "^0.2.0",
+    "koa": "^2.0.0",
+    "spotify-web-api-node": "^2.3.6"
+  }
+}
